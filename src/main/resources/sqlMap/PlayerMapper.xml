@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.oraclejava.mapper.playerMapper">
+	<select id="selectList" resultType="kr.co.oraclejava.service.Player">
+		select * from player
+	</select>
+
+	<select id="select" resultType="kr.co.oraclejava.service.Player">
+		select * from player
+		where id =
+		#{id}
+	</select>
+
+	<insert id="insert" parameterType="kr.co.oraclejava.service.Player">
+		insert into player(name, age,
+		salary, filename)
+		value (#{name}, #{age}, #{salary}, #{filename})
+	</insert>
+
+	<update id="update" parameterType="kr.co.oraclejava.service.Player">
+		update player set name=#{name}, age=#{age}, salary=#{salary}
+		<if test="filename != null">
+			,filename = #{filename)
+		</if>
+		where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="kr.co.oraclejava.service.Player">
+		delete from player
+		where id = #{id}
+	</delete>
+</mapper>

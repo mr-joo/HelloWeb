@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+
+		<property name="url">
+			<value>jdbc:mysql://localhost:3306/kbo</value>
+		</property>
+
+		<property name="username">
+			<value>root</value>
+		</property>
+
+		<property name="password">
+			<value>Helloworld!29</value>
+		</property>
+	</bean>
+	
+	<bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref local="dataSource" />
+        </property>
+    </bean>
+    
+    <!-- transactionManager를 찾음 -->
+    <tx:annotation-driven/>
+
+	<bean class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- mybatis 설정 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> <!-- 객체, 커넥션을 계속할지 스프링한테 넘길지 설정하기 나름 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:sqlMap/PlayerMapper.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+	
+	<!-- mapper 인터페이스 만든거 등록 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="kr.co.oraclejava.mapper"></property>
+	</bean>
+
+	<!-- <bean id="playerDao" class="kr.co.oraclejava.service.PlayerDao"> <property 
+		name="dataSource"> <ref local="dataSource" /> </property> </bean> -->
+
+	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="kr.co.oraclejava.service"></context:component-scan>
+
+</beans>
